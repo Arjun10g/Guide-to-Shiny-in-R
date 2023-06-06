@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiny</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js" integrity="sha512-cOH8ndwGgPo+K7pTvMrqYbmI8u8k6Sho3js0gOqVWTmQMlLIi6TbqGWRTpf1ga8ci9H3iPsvDLr4X7xwhC/+DQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js" integrity="sha512-AMl4wfwAmDM1lsQvVBBRHYENn1FR8cfOTpt8QVbb/P55mYOdahHD4LmHM1W55pNe3j/3od8ELzPf/8eNkkjISQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="index.js" defer></script>
+    </head>
+<body>
+    <div class="header">
+        <i class="fa fa-bars"></i>
+        <h1 class="title">Learn How to Shine in Shiny</h1>
+    </div>
+    
+    <div class="content">
+        <div class="sidebar">
+            <ul>
+                <li>Basic UI</li>
+                <li>UI Examples</li>
+                <li>Output</li>
+                <li>Reactivity</li>
+                <li>Create your own App</li>
+            </ul>
+        </div>
+        <div class="main-cont">
+            <div class="cont1 cont">
+                <h1></h1>
+                <p>All input functions in Shiny have a common structure. They require the first argument, called <code>inputId</code>, which serves as the identifier to connect the frontend and backend of your application. The <code>inputId</code> should be a simple string consisting only of letters, numbers, and underscores. It must also be unique to refer to the specific input control in your server function.</p>
+<p>Most input functions also have a second parameter called <code>label</code>, which is used to create a user-friendly label for the control. It should be carefully chosen to ensure usability for humans. Additionally, the <code>value</code> parameter is often available to set the default value for the input control. Other parameters specific to each control can be provided by name.</p>
+<p>When creating an input, it is recommended to provide the <code>inputId</code> and <code>label</code> arguments by their respective positions, and supply other arguments by their names. For example:</p>
+<pre><code>sliderInput("min", "Limit (minimum)", value = 50, min = 0, max = 100)</code></pre>
+<p>Shiny offers various input controls that can be categorized based on the type of control they create. While not exhaustive, here's a brief overview of some important parameters for each control. To get comprehensive details, it's recommended to refer to the documentation:</p>
+<ul>
+    <li>Numeric Input: Allows users to input numeric values. Important parameters include <code>value</code>, <code>min</code>, <code>max</code>, and <code>step</code>.</li>
+    <pre>numericInput("myNum", label = "Numeric Input")</pre>
+    <input type="number" name="myNum" value="0" min="0" max="100" step="1" placeholder="Enter Number"/>
+    <li>Slider Input: Provides a slider to select a numeric value within a range. Parameters include <code>value</code>, <code>min</code>, <code>max</code>, and <code>step</code>.</li>
+    <pre>sliderInput("mySlider", label = "Slider Input", min ="0", max="100", step="1", value="0")</pre>
+    <input type="range" name="mySlider" value="0" min="0" max="100" step="1"/>
+    <li>Text Input: Enables users to enter text or character values. Parameters include <code>value</code> and <code>placeholder</code>.</li>
+    <pre>textInput("myText", label = "Text Input")</pre>
+    <input type="text" name="myText" placeholder="Enter Text"/>
+    <li>Checkbox Input: Creates a single checkbox control. Parameters include <code>value</code> and <code>checked</code>.</li>
+    <pre>checkboxInput("myCheck", label = "Checkbox Input")</pre>
+    <input type="checkbox" name="myCheck" value="myCheck" checked/>
+    <li>Checkbox Group Input: Allows multiple checkboxes to be selected. Parameters include <code>choices</code> and <code>selected</code>.</li>
+    <pre>checkboxGroupInput("myCheckGroup", label = "Checkbox Group Input")</pre>
+    <input type="checkbox" name="myCheckGroup" value="myCheckGroup" checked/>
+    <li>Radio Buttons Input: Presents a group of mutually exclusive options. Parameters include <code>choices</code> and <code>selected</code>.</li>
+    <pre>radioButtons("myRadio", label = "Radio Buttons Input")</pre>
+    <input type="radio" name="myRadio" value="myRadio" checked/>
+    <li>Select Input: Displays a dropdown menu for selecting an option. Parameters include <code>choices</code> and <code>selected</code>.</li>
+    <pre>selectInput(inputId,label,choices,selected = NULL,multiple = FALSE,selectize = TRUE,width = NULL,size = NULL)</pre>
+    <select name="mySelect">
+        <option value="mySelect">mySelect</option>
+        <option value="mySelect">mySelect 2</option>
+    </select>
+    <li>Date Input: Enables users to select a date from a calendar. Parameters include <code>value</code> and <code>min</code>/<code>max</code> dates.</li>
+    <pre>dateInput("myDate", label = "Date Input")</pre>
+    <input type="date" name="myDate" value="2021-01-01" min="2021-01-01" max="2021-12-31"/>
+    <li>Date Range Input: Allows users to select a range of dates. Parameters include <code>start</code> and <code>end</code> values.</li>
+    <pre>dateRangeInput("myDateRange", label = "Date Range Input")</pre>
+    <input type="date" name="myDateRange" value="2021-01-01" min="2021-01-01" max="2021-12-31"/>
+    <li>File Input: Supports uploading files from the user's device. Parameters include <code>accept</code>, <code>multiple</code>, and <code>placeholder</code>.</li>
+    <pre>fileInput("myFile", label = "File Input")</pre>
+    <input type="file" name="myFile" accept="image/*" multiple/>
+    <li>Action Button: Triggers an action when clicked. Parameters include <code>label</code> and <code>icon</code>.</li>
+    <pre>actionButton("myButton", label = "Action Button")</pre>
+    <button type="button" name="myButton">Action Button</button>
+  </ul>
+  <p>These are just some of the input controls available in Shiny. It's important to explore the documentation</p>
+            </div>
+            <div class="cont2 cont"><h1></h1>
+            <li>Example 1 - Text Collection</li>
+            <div id="name-input" class="form-group shiny-input-container">
+                <label for="name">What's your name?</label><br>
+                <input id="name" type="text" class="form-control" />
+              </div>
+              
+              <div id="password-input" class="form-group shiny-input-container">
+                <label for="password">What's your password?</label><br>
+                <input id="password" type="password" class="form-control" />
+              </div>
+              
+              <div id="story-input" class="form-group shiny-input-container">
+                <label for="story">Tell me about yourself</label><br>
+                <textarea id="story" rows="4" class="form-control"></textarea>
+              </div>
+              <pre>ui <- fluidPage(<br>textInput("name", "What's your name?"),<br>passwordInput("password", "What's your password?"),<br>textAreaInput("story", "Tell me about yourself", rows = 3)<br>)</pre>
+              <li>Example 2 - Numeric Inputs and Sliders</li>
+              <div id="num-input" class="form-group shiny-input-container">
+                <label for="num">Number one</label><br>
+                <input id="num" type="number" class="form-control" value="0" min="0" max="100" />
+              </div>
+              
+              <div id="num2-input" class="form-group shiny-input-container">
+                <label for="num2">Number two</label><br>
+                <input id="num2" type="range" class="form-control" value="50" min="0" max="100" />
+              </div>
+              
+              <div id="rng-input" class="form-group shiny-input-container">
+                <label for="rng">Range</label><br>
+                <input id="rng" type="range" class="form-control" value="10,20" min="0" max="100" />
+              </div>
+              <pre>ui &lt;- fluidPage( numericInput("num", "Number one", value = 0, min = 0, max = 100),<br> sliderInput("num2", "Number two", value = 50, min = 0, max = 100),<br> sliderInput("rng", "Range", value = c(10, 20), min = 0, max = 100) )</pre>
+
+                <li>Example 3 - Date Inputs</li>
+                <div id="dob-input" class="form-group shiny-input-container">
+                    <label for="dob">When were you born?</label><br>
+                    <input id="dob" type="date" class="form-control" />
+                  </div>
+                  
+                  <div id="holiday-input" class="form-group shiny-input-container">
+                    <label for="holiday">When do you want to go on vacation next?</label><br>
+                    <input id="holiday" type="text" class="form-control" />
+                  </div>
+                  <pre>ui &lt;- fluidPage(<br>dateInput("dob", "When were you born?"),<br>dateRangeInput("holiday", "When do you want to go on vacation next?")<br>)</pre>
+
+                  <li>Working with Limited Options</li>
+                  <div id="state-input" class="form-group shiny-input-container">
+                    <label for="state">What's your favourite state?</label>
+                    <select id="state" class="form-control">
+                      <option value="Alabama">Alabama</option>
+                      <option value="Alaska">Alaska</option>
+                      <!-- ... other state options ... -->
+                      <option value="Wyoming">Wyoming</option>
+                    </select>
+                  </div>
+                  
+                  <div id="animal-input" class="form-group shiny-input-container">
+                    <label for="animal">What's your favourite animal?</label>
+                    <div class="form-check">
+                      <input id="animal1" type="radio" name="animal" value="dog" class="form-check-input" />
+                      <label for="animal1" class="form-check-label">dog</label>
+                    </div>
+                    <div class="form-check">
+                      <input id="animal2" type="radio" name="animal" value="cat" class="form-check-input" />
+                      <label for="animal2" class="form-check-label">cat</label>
+                    </div>
+                    <!-- ... other animal options ... -->
+                    <div class="form-check">
+                      <input id="animal6" type="radio" name="animal" value="I hate animals" class="form-check-input" />
+                      <label for="animal6" class="form-check-label">I hate animals</label>
+                    </div>
+                  </div>
+                  <pre>animals &lt;- c("dog", "cat", "mouse", "bird", "other", "I hate animals")<br>ui &lt;- fluidPage(<br>selectInput("state", "What's your favourite state?", state.name),<br>radioButtons("animal", "What's your favourite animal?", animals)<br>)</pre>
+
+                  <li>Multiple Selected Values</li>
+                  <pre>ui &lt;- fluidPage(<br>selectInput("state", "What's your favourite state?", state.name, multiple = TRUE)<br>)</pre>
+
+                  <li>CheckBox Input</li>
+                  <pre>ui &lt;- fluidPage(<br>checkboxGroupInput("animal", "What animals do you like?", animals)<br>)</pre>
+            </div>
+            <div class="cont3 cont"><h1></h1>
+                <p>Outputs in the Shiny UI create placeholders that are filled by the server function. Similar to inputs, outputs require a unique ID as their first argument. For example, if the UI specification has an output with ID "plot", it can be accessed in the server function using <code>output$plot</code>.</p>
+                <p>There are three main types of outputs: text, tables, and plots. Each output function on the frontend is coupled with a corresponding render function in the backend. Let's explore the basics of these output functions and their render counterparts.</p>
+                <p><strong>1. Text Output:</strong></p>
+                <ul>
+                <li>Use <code>textOutput()</code> to display regular text output.</li>
+                <li>Use <code>verbatimTextOutput()</code> to display fixed width text, such as console output.</li>
+                </ul>
+                <pre><code>ui &lt;- fluidPage(<br>textOutput("text"),<br>verbatimTextOutput("code"))<br><br><br> server <- function(input, output, session) {<br>output$text <- renderText({<br>"Hello friend!"<br>})<br><br>output$code <- renderPrint({<br>summary(1:10)<br>})<br>}</code></pre>
+                <p><strong>2. Table Output:</strong></p>
+                <ul>
+                <li>Use <code>tableOutput()</code> and <code>renderTable()</code> to display static tables of data.</li>
+                <li>Use <code>dataTableOutput()</code> and <code>renderDataTable()</code> to display dynamic tables with controls to change visible rows.</li>
+                </ul>
+                <pre><code>ui &lt;- fluidPage(<br>tableOutput("table"),<br>dataTableOutput("datatable"))<br><br><br> server <- function(input, output, session) {<br>output$table <- renderTable({<br>head(iris)<br>})<br><br>output$datatable <- renderDataTable({<br>head(iris)<br>})<br>}</code></pre>
+                <pre><code>ui &lt;- fluidPage(<br><br>tableOutput("static"),<br>dataTableOutput("dynamic")<br>)<br><br><br>server <- function(input, output, session) {<br>output$static <- renderTable(head(mtcars))<br>output$dynamic <- renderDataTable(mtcars, options = list(pageLength = 5))<br>}</code></pre>
+                <p><strong>3. Plot Output:</strong></p>
+                <ul>
+                <li>Use <code>plotOutput()</code> and <code>renderPlot()</code> to display R graphics, such as base or ggplot2 plots.</li>
+                <li>Adjust the width and height using the <code>width</code> and <code>height</code> arguments.</li>
+                <li>Set <code>res = 96</code> to match the plot with what you see in RStudio.</li>
+                </ul>
+                <pre><code>ui &lt;- fluidPage(<br>plotOutput("plot")<br>)<br><br><br>server <- function(input, output, session) {<br>output$plot <- renderPlot({<br>plot(1:10)<br>})<br>}</code></pre>
+                <p>Plots are special because they can also act as inputs. <code>plotOutput()</code> has additional arguments like <code>click</code>, <code>dblclick</code>, and <code>hover</code> that can be used to create reactive inputs for handling user interactions with the plot.</p>
+            </div>
+            <div class="cont4 cont"><h1></h1>
+            <p>1. <strong>Basic Guts of every Shiny Application</strong></p>
+            <pre>library(shiny)<br>ui &lt;- fluidPage(<br># frontend interface<br>)<br>server &lt;- function(input, output, session) {<br># backend logic<br>}<br>shinyApp(ui, server)</pre>
+            <p>Previously, we learned about the frontend and backend of a Shiny app. The frontend, represented by the ui object, contains the HTML that is displayed to all users. It is straightforward because every user sees the same HTML. However, the backend, represented by the server function, is more complex because each user needs their own independent version of the app. This ensures that when one user interacts with the app, it doesn't affect the outputs seen by other users.</p>
+            <p>To achieve this independence, Shiny calls the server function for each new session. Just like any other R function, the server function creates a local environment specific to that session. This isolation allows each session to have its own unique state and variables. Therefore, most of the reactive programming in Shiny occurs within the server function.
+
+                The server function takes three parameters: input, output, and session. These objects are automatically created by Shiny when the session begins and are associated with that specific session. At this point, we will focus on understanding the input and output arguments, while leaving the session parameter for future chapters.</p>
+
+                <p>2. <strong>Accessing Input Values</strong></p>
+                <p>The input argument in the server function is a list-like object that holds all the input data sent from the user's browser. It is structured in a way that each input control is named according to its input ID specified in the UI.
+
+                    For example, if your UI includes a numeric input control with an input ID of "count", like this:</p>
+
+                    <pre>ui &lt;- fluidPage(<br>numericInput("count", label = "Number of values", value = 100)<br>)</pre>
+                    <p>You can access the value of that input using input$count. Initially, it will contain the default value of 100, and as the user modifies the input value in the browser, it will be automatically updated to reflect the new value.</p>
+                    <p>To read from an input, you must be within a reactive context created by functions like renderText() or reactive(). This constraint ensures that outputs can automatically update when an input changes. If you attempt to access an input value outside of a reactive context, you will encounter an error message indicating the need to wrap it inside reactive() or observer(). Here's an example code that demonstrates the error message when trying to access the input$count value outside of a reactive context:</p>
+                    <pre>server &lt;- function(input, output, session) { output$text &lt;- renderText({ message("The value of input$count is ", input$count) "Output Text" }) } shinyApp(ui, server)</pre>
+                    <p>In this modified code, the message() function is placed within the renderText() function, which is a reactive context. This allows the output text to be updated whenever the input value changes, and it avoids the error of accessing the input value outside of a reactive context.</p>
+
+                    <p>3. <strong>Accessing Output Values</strong></p>
+                    <p>The output argument in the server function is a list-like object that is used to send output to the UI. Similar to the input object, it is named according to the output ID. The main difference is that the output object is used for sending output instead of receiving input. To associate an output with a UI element, you need to use a render function in the server.</p>
+
+                    <pre>ui &lt;- fluidPage(<br>  textOutput("greeting")<br>)<br><br>server &lt;- function(input, output, session) {<br>  output$greeting &lt;- renderText("Hello human!")<br>}</pre>
+
+                    <p>4. <strong>Reactive Programming</strong></p>
+                    <p>An app is going to be pretty boring if it only has inputs or only has outputs. The real
+                        magic of Shiny happens when you have an app with both.</p>
+                    <pre>ui &lt;- fluidPage(<br>  textInput("name", "What's your name?"),<br>  textOutput("greeting")<br>)<br><br>server &lt;- function(input, output, session) {<br>  output$greeting &lt;- renderText({<br>    paste0("Hello ", input$name, "!")<br>  })<br>}</pre>
+                    <p>When the user types their name into the textInput, the textOutput will automatically update
+                        to greet them. This is the essence of reactive programming.</p>
+                    
+                    <p>5. <strong>Reactive Expressions</strong></p>
+                    <p>Reactive expressions play a crucial role in Shiny apps as they provide valuable information to optimize performance and simplify the understanding of the app's reactive graph. They have characteristics of both inputs and outputs</p>
+                    <p>Reactive expressions are a special type of reactive programming that allow you to cache
+                        the results of an expression. This is useful when you have a long-running calculation
+                        that you don't want to re-run every time a user changes an input.</p>
+                    <pre>ui &lt;- fluidPage(<br>  numericInput("n", "How many random numbers?", 100),<br>  textOutput("mean")<br>)<br><br>server &lt;- function(input, output, session) {<br>  x &lt;- reactive({<br>    rnorm(input$n)<br>  })<br>  output$mean &lt;- renderText({<br>    mean(x())<br>  })<br>}</pre>
+                </div>
+            <div class="cont5 cont"><h1></h1>
+            <p>1. <strong>Random Normal Distribution with Plots</strong></p>
+            <pre>library(shiny)<br>library(tidyverse)<br><br><br>ui &lt;- fluidPage(tags$h1(style = 'text-align:center;','Random Normal Distribution'),<br>sidebarLayout(<br>sidebarPanel(<br>sliderInput("num", "Number of Random Numbers", value = 10, min = 1, max = 100),<br>numericInput("mean", "Mean of Distribution", value = 100, min = 1, max = 200),<br>numericInput("sd", "Standard Deviation of Distribution", value = 15, min = 1, max = 50),),<br>mainPanel(<br>verbatimTextOutput("randomOutput"),<br>plotOutput('histogram'))))<br><br>server &lt;- function(input, output, session) {<br>random_numbers &lt;- reactive({rnorm(input$num, input$mean, input$sd)})<br>output$randomOutput &lt;- renderPrint({random_numbers() %>% round(2)})<br>output$histogram &lt;- renderPlot({tibble(x = random_numbers()) %>%<br> ggplot(data = ., aes(x = x)) +<br>geom_histogram(col = 'gray', fill = 'skyblue', bins = 10)}<br>}<br><br><br>shinyApp(ui, server)</pre>
+            <p>2. <strong>Create a simulation app that simualtes slopes</strong></p>
+            <pre>library(shiny) <br><br>ui <- fluidPage(<br> sidebarLayout(<br> sidebarPanel(<br>numericInput("b0", "b0:", value = 0.2),<br> numericInput("b1", "b1:", value = 0.5),<br>numericInput("n", "Sample Size:", value = 10),<br>numericInput("reps", "Number of Repetitions:", value = 1000),<br>actionButton("run", "Run")<br>),<br>mainPanel(<br>tabsetPanel(<br>tabPanel("All Slopes", tableOutput("allResults")),<br>tabPanel("Overall Results", tableOutput("averages"))<br>)<br>)<br>)<br>)<br><br>server <- function(input, output, session) {<br>observeEvent(input$run, {<br>reps <- input$reps<br>b0 <- input$b0<br>b1 <- input$b1<br>mat.n <- input$n<br>mat.slope <- matrix(0, reps, length(mat.n))<br>mat.mse <- matrix(0, length(mat.n), 1)<br>mat.se <- matrix(0, length(mat.n), 1)<br><br>for (j in 1:length(mat.n)) {<br>    for (i in 1:reps) {<br>        X <- runif(mat.n[j], -1, 1)<br>        y <- b0 + b1*X + rnorm(mat.n[j], 0, 1)<br>        mod <- lm(y ~ X)<br>        mat.slope[i, j] <- mod$coef[2]<br>    }<br>    mat.mse[j] <- mean((mat.slope[, j] - b1)^2)<br>    mat.se[j] <- sd(mat.slope[, j])<br>    cat("Loop", j, "out of", length(mat.n), "\n")<br>}<br><br>output$allResults <- renderTable({<br>    data.frame(slopes = mat.slope, samplesize = mat.n, standard_error = mat.se)<br>})<br><br>output$averages <- renderTable({<br>    data.frame(mat.mse, mat.se)<br>})<br>})<br>}<br><br>shinyApp(ui, server)</pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

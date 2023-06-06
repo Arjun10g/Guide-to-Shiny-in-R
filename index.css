@@ -1,0 +1,144 @@
+/* Import Sofia Font */
+@import url('https://fonts.googleapis.com/css?family=Sofia');
+/* Import Poppins */
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background-color: pink;
+    background:repeating-linear-gradient(45deg, pink, rgb(214, 164, 173), rgb(245, 164, 178) 20%), 
+		repeating-radial-gradient(circle, pink, rgb(214, 164, 173), rgb(245, 164, 178) 5%), 
+		repeating-conic-gradient(pink, rgb(214, 164, 173), rgb(245, 164, 178) 5%);
+	background-blend-mode: screen, difference;
+    height:100vh;
+    font-family: 'Sofia', cursive;
+    width:100vw;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+
+.header i{
+    flex-basis: 3%;
+    text-align: center;
+    font-size: clamp( 1.8rem, 1.3512820512820514rem + 1.4358974358974357vw, 2.5rem );
+    cursor: pointer;
+}
+
+.header h1{
+    font-size: clamp( 1.8rem, 1.3512820512820514rem + 1.4358974358974357vw, 2.5rem );
+    flex-basis: 90%;
+    text-align: center;
+}
+
+.content{
+    display:flex;
+}
+
+.sidebar{
+    flex-basis: 20%;
+    letter-spacing: 5px;
+    text-align: center;
+    border: 5px solid black;
+    border-radius: 10px;
+    border-left: none;
+    background-color: rgb(253, 164, 179);
+}
+
+.sidebar ul li{
+    list-style: none;
+    line-height: 50px;
+    font-size: clamp( 1rem, 0.6794871794871795rem + 1.0256410256410255vw, 1.5rem );
+    border-bottom: 4px solid black;
+    padding: 5px 20px;
+}
+
+.sidebar ul li:hover{
+    background-color: pink;
+    cursor: pointer;
+}
+
+.main-cont{
+        flex-basis: 80%;
+        overflow: scroll;
+}
+
+.cont{
+    background-color: rgba(0, 0, 0, 0.463);
+    padding: 20px;
+}
+
+.cont h1{
+    text-align: center;
+    font-size: clamp( 1.4rem, 1.0153846153846153rem + 1.2307692307692308vw, 2rem );
+    font-family: 'Times New Roman', Times, serif;
+    letter-spacing: 6px;
+    word-spacing: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: white;
+    padding: 10px;
+    text-shadow: 2px 2px 4px #000000;
+    text-decoration: underline;
+    text-underline-offset: 10px;
+}
+
+.cont p{
+    font-size: clamp( 1rem, 0.6794871794871795rem + 1.0256410256410255vw, 1.5rem );
+    font-family: 'Times New Roman', Times, serif;
+    text-align: justify;
+    text-indent: 1.3cm;
+    color: white;
+    padding: 20px;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+.cont li{
+    font-size: 1.5rem;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: justify;
+    color: blanchedalmond;
+    padding: 20px;
+    list-style-position: inside;
+}
+
+pre{
+    font-size: 1.25rem;
+    font-family: 'Times New Roman', Times, serif;
+    color: white;
+    padding: 20px;
+    font-weight: 100;
+    letter-spacing: 2px;
+    width:100%;
+    background: black;
+    border-radius: 20px;
+    overflow: scroll;
+    margin: 20px 0;
+}
+
+
+.cont1 input, select, button{
+    margin-top: 20px;
+    /* Center */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+label{
+    color:white;
+}
+
+.cont{
+    display: none;
+}
