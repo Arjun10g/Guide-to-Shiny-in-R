@@ -25,6 +25,7 @@
                 <li>Output</li>
                 <li>Reactivity</li>
                 <li>Create your own App</li>
+                <li>Layouts</li>
             </ul>
         </div>
         <div class="main-cont">
@@ -224,6 +225,51 @@
             <pre>library(shiny)<br>library(tidyverse)<br><br><br>ui &lt;- fluidPage(tags$h1(style = 'text-align:center;','Random Normal Distribution'),<br>sidebarLayout(<br>sidebarPanel(<br>sliderInput("num", "Number of Random Numbers", value = 10, min = 1, max = 100),<br>numericInput("mean", "Mean of Distribution", value = 100, min = 1, max = 200),<br>numericInput("sd", "Standard Deviation of Distribution", value = 15, min = 1, max = 50),),<br>mainPanel(<br>verbatimTextOutput("randomOutput"),<br>plotOutput('histogram'))))<br><br>server &lt;- function(input, output, session) {<br>random_numbers &lt;- reactive({rnorm(input$num, input$mean, input$sd)})<br>output$randomOutput &lt;- renderPrint({random_numbers() %>% round(2)})<br>output$histogram &lt;- renderPlot({tibble(x = random_numbers()) %>%<br> ggplot(data = ., aes(x = x)) +<br>geom_histogram(col = 'gray', fill = 'skyblue', bins = 10)}<br>}<br><br><br>shinyApp(ui, server)</pre>
             <p>2. <strong>Create a simulation app that simualtes slopes</strong></p>
             <pre>library(shiny) <br><br>ui <- fluidPage(<br> sidebarLayout(<br> sidebarPanel(<br>numericInput("b0", "b0:", value = 0.2),<br> numericInput("b1", "b1:", value = 0.5),<br>numericInput("n", "Sample Size:", value = 10),<br>numericInput("reps", "Number of Repetitions:", value = 1000),<br>actionButton("run", "Run")<br>),<br>mainPanel(<br>tabsetPanel(<br>tabPanel("All Slopes", tableOutput("allResults")),<br>tabPanel("Overall Results", tableOutput("averages"))<br>)<br>)<br>)<br>)<br><br>server <- function(input, output, session) {<br>observeEvent(input$run, {<br>reps <- input$reps<br>b0 <- input$b0<br>b1 <- input$b1<br>mat.n <- input$n<br>mat.slope <- matrix(0, reps, length(mat.n))<br>mat.mse <- matrix(0, length(mat.n), 1)<br>mat.se <- matrix(0, length(mat.n), 1)<br><br>for (j in 1:length(mat.n)) {<br>    for (i in 1:reps) {<br>        X <- runif(mat.n[j], -1, 1)<br>        y <- b0 + b1*X + rnorm(mat.n[j], 0, 1)<br>        mod <- lm(y ~ X)<br>        mat.slope[i, j] <- mod$coef[2]<br>    }<br>    mat.mse[j] <- mean((mat.slope[, j] - b1)^2)<br>    mat.se[j] <- sd(mat.slope[, j])<br>    cat("Loop", j, "out of", length(mat.n), "\n")<br>}<br><br>output$allResults <- renderTable({<br>    data.frame(slopes = mat.slope, samplesize = mat.n, standard_error = mat.se)<br>})<br><br>output$averages <- renderTable({<br>    data.frame(mat.mse, mat.se)<br>})<br>})<br>}<br><br>shinyApp(ui, server)</pre>
+            </div>
+            <div class="cont6 cont">
+                <h1></h1>
+                <p>Layout functions in Shiny are used to organize and structure the visual components of an app. They allow you to create a hierarchy of layouts, which corresponds to the generated HTML structure. This helps in understanding and organizing the layout code.
+
+                    There are different layout functions available in Shiny that you can use to create different types of layouts. Some commonly used layout functions include:</p>
+
+                    <ul>
+                        <li><code>fluidPage()</code>: This is the most common layout function used in Shiny. It creates a page with a fluid layout, where the content adjusts to the size of the browser window.</li>
+                        <pre>ui <- fluidPage(<br>tags$h1("Welcome to My App"),<br>p("This is a sample app created with Shiny."),<br># Additional UI components go here<br>)
+                          </pre>
+                        <li><code>fixedPage()</code>: This function creates a page with a fixed layout, where the content has a fixed width and height.</li>
+                        <pre>ui <- fixedPage(<br>tags$h1("Welcome to My App"),<br>p("This is a sample app created with Shiny."),<br># Additional UI components go here<br>)
+                          </pre>
+                        <li><code>navbarPage()</code>: This function creates a page with a navigation bar at the top, allowing you to switch between different tabs or sections.</li>
+                        <pre>ui <- navbarPage(<br>title = "My App",<br>tabPanel("Tab 1", <br>  tags$h2("Content for Tab 1"),<br>  p("This is the first tab."),<br>  # Additional UI components for Tab 1 go here<br>),<br>tabPanel("Tab 2", <br>  tags$h2("Content for Tab 2"),<br>  p("This is the second tab."),<br>  # Additional UI components for Tab 2 go here<br>)<br>)
+                          </pre>
+                        <li><code>sidebarLayout()</code>: This function creates a layout with a sidebar panel on one side and a main panel on the other side.</li>
+                        <pre>ui <- sidebarLayout(<br>sidebarPanel(<br>  tags$h3("Sidebar"),<br>  p("This is the sidebar content."),<br>  # Additional UI components for the sidebar go here<br>),<br>mainPanel(<br>  tags$h1("Main Content"),<br>  p("This is the main content area."),<br>  # Additional UI components for the main panel go here<br>)<br>)
+                          </pre>
+                        <li><code>splitLayout()</code>: This function allows you to split the page into multiple sections or columns.</li>
+                        <pre>ui <- splitLayout(<br>cellWidths = c("30%", "70%"),<br>tags$h2("Section 1"),<br>p("This is the first section."),<br># Additional UI components for the first section go here<br><br>tags$h2("Section 2"),<br>p("This is the second section."),<br># Additional UI components for the second section go here<br>)
+                          </pre>
+                        <li><code>tabsetPanel()</code>: This function creates a tabbed layout, where each tab represents a different section of the app.</li>
+                        <pre>ui <- tabsetPanel(<br>tabPanel("Tab 1", <br>  tags$h2("Content for Tab 1"),<br>  p("This is the first tab."),<br>  # Additional UI components for Tab 1 go here<br>),<br>tabPanel("Tab 2", <br>  tags$h2("Content for Tab 2"),<br>  p("This is the second tab."),<br>  # Additional UI components for Tab 2 go here<br>)<br>)
+                          </pre>
+                      </ul>
+
+                      <p>These layout functions can be nested and combined to create complex and visually appealing app layouts. By carefully organizing and structuring the visual components, you can improve the usability and aesthetics of your Shiny app.</p>
+
+                      <p>1. <strong>Basic App with a sidebar</strong></p>
+                      <pre>fluidPage(<br>titlePanel(<br># app title/description<br>),<br>sidebarLayout(<br>sidebarPanel(<br># inputs<br>),<br>mainPanel(<br># outputs<br>)<br>)<br>)</pre>
+                      <img src="img1.jpeg" alt="">
+
+                     <p>2. <strong>The structure underlying a simple multirow app.</strong></p>
+                     <pre>fluidPage(<br>fluidRow(<br>column(4,<br>...<br>),<br>column(8,<br>...<br>)<br>),<br>fluidRow(<br>column(6,<br>...<br>),<br>column(6,<br>...<br>)<br>)<br>)</pre>
+                     <img src="img2.jpeg" alt="">
+
+                        <p>3. <strong>A tabsetPanel() allows the user to select a single tabPanel() to view.</strong></p>
+                        <pre>ui <- fluidPage(<br>tabsetPanel(<br>tabPanel("Import data",<br>fileInput("file", "Data", buttonLabel = "Upload..."),<br>textInput("delim", "Delimiter (leave blank to guess)", ""),<br>numericInput("skip", "Rows to skip", 0, min = 0),<br>numericInput("rows", "Rows to preview", 10, min = 1)<br>),<br>tabPanel("Set parameters"),<br>tabPanel("Visualise results")<br>)<br>)</pre>
+                        <img src="img3.jpeg" alt="">
+
+                        <p>4. <strong>Navigation Bar</strong></p>
+                        <pre>ui <- fluidPage(<br>navlistPanel(<br>id = "tabset",<br>"Heading 1",<br>tabPanel("panel 1", "Panel one contents"),<br>"Heading 2",<br>tabPanel("panel 2", "Panel two contents"),<br>tabPanel("panel 3", "Panel three contents")<br>)<br>)</pre>
+                        <img src="img4.jpeg" alt="">
             </div>
         </div>
     </div>
