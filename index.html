@@ -26,6 +26,9 @@
                 <li>Reactivity</li>
                 <li>Create your own App</li>
                 <li>Layouts</li>
+                <li>Interactivity</li>
+                <li>User Feedback</li>
+                <li>Dynamic UI</li>
             </ul>
         </div>
         <div class="main-cont">
@@ -270,6 +273,111 @@
                         <p>4. <strong>Navigation Bar</strong></p>
                         <pre>ui <- fluidPage(<br>navlistPanel(<br>id = "tabset",<br>"Heading 1",<br>tabPanel("panel 1", "Panel one contents"),<br>"Heading 2",<br>tabPanel("panel 2", "Panel two contents"),<br>tabPanel("panel 3", "Panel three contents")<br>)<br>)</pre>
                         <img src="img4.jpeg" alt="">
+            </div>
+            <div class="cont7 cont">
+              <h1></h1>
+              <p>The <i>plotOutput()</i> function in R has a unique feature that makes it more than just a plot display. It can also serve as an input that responds to pointer events. This opens up possibilities for creating interactive graphics where users can directly interact with the data on the plot. Interactive graphics offer great versatility and have a wide range of applications.</p>
+              <p>The <i>plotOutput()</i> function in Shiny allows a plot to respond to four different mouse events: click, dblclick (double-click), hover (when the mouse remains in the same place for a short period), and brush (a rectangular selection tool). By providing a string argument to the corresponding plotOutput() argument, you can turn these events into Shiny inputs.</p>
+              <ul>
+                <li><code>&lt;plotOutput("plot", click = "plot_click")</code> - This creates an input <code>input$plot_click</code> that handles mouse clicks on the plot.</li>
+                <li><code>&lt;plotOutput("plot", dblclick = "plot_dblclick")</code> - This creates an input <code>input$plot_dblclick</code> that handles double-click events on the plot.</li>
+                <li><code>&lt;plotOutput("plot", hover = "plot_hover")</code> - This creates an input <code>input$plot_hover</code> that handles hover events on the plot.</li>
+                <li><code>&lt;plotOutput("plot", brush = "plot_brush")</code> - This creates an input <code>input$plot_brush</code> that handles rectangular selection events on the plot.</li>
+                <pre>ui &lt;- fluidPage(<br>  plotOutput("plot", click = "plot_click"),<br>  verbatimTextOutput("info")<br>)<br>server &lt;- function(input, output) {<br>  output$plot &lt;- renderPlot({ plot(mtcars$wt, mtcars$mpg) }, res = 96)<br>  output$info &lt;- renderPrint({ req(input$plot_click) x &lt;- round(input$plot_click$x, 2) y &lt;- round(input$plot_click$y, 2) cat("[", x, ", ", y, "]", sep = "") }) }</pre>
+                <pre>ui &lt;- fluidPage(<br>  plotOutput("plot", click = "plot_click"),<br>  tableOutput("data")<br>)<br>server &lt;- function(input, output, session) {<br>  output$plot &lt;- renderPlot({ plot(mtcars$wt, mtcars$mpg) }, res = 96)<br>  output$data &lt;- renderTable({ nearPoints(mtcars, input$plot_click, xvar = "wt", yvar = "mpg") }) }</pre>
+                <pre>ui &lt;- fluidPage(<br>  plotOutput("plot", brush = "plot_brush"),<br>  tableOutput("data")<br>)<br>server &lt;- function(input, output, session) {<br>  output$plot &lt;- renderPlot({ ggplot(mtcars, aes(wt, mpg)) + geom_point() }, res = 96)<br>  output$data &lt;- renderTable({ brushedPoints(mtcars, input$plot_brush) }) }</pre>
+              </ul>
+              <p><strong>Dynamic Height and Width</strong></p>
+              <p>In addition to interactive graphics, there are other important concepts covered in the rest of this chapter. One such concept is making the plot size reactive, allowing the width and height to change based on user actions. To achieve this, you can use zero-argument functions in the width and height arguments of renderPlot() within the server code. These functions, defined in the server rather than the UI, should return the desired size in pixels. They are evaluated reactively, enabling dynamic resizing of the plot.
+
+                The provided example app demonstrates this concept by using two sliders to control the size of the plot. The data displayed on the plot remains the same even when the plot is resized, meaning that new random numbers are not generated.</p>
+                <pre>ui <- fluidPage(<br> sliderInput("height", "height", min = 100, max = 500, value = 250),<br> sliderInput("width", "width", min = 100, max = 500, value = 250),<br> plotOutput("plot", width = 250, height = 250)<br>)<br><br>server <- function(input, output, session) {<br> output$plot <- renderPlot(<br> width = function() input$width,<br> height = function() input$height,<br> res = 96,<br> {<br> plot(rnorm(20), rnorm(20))<br> }<br> )<br>}</pre>
+            </div>
+            <div class="cont8 cont">
+              <h1></h1>
+              <p>Providing clear and informative error messages to users is essential in creating user-friendly applications. Similar to writing functions in R, handling potential misuse of the app allows for descriptive messages in the user interface (UI) instead of generic errors in the underlying R code. This enhances the user experience and facilitates troubleshooting.</p>
+              <p><strong>Shiny Feedback</strong></p>
+              <p>A great way to give additional feedback to the user is via the shinyFeedback package.
+                Using it is a two-step process. First, you add useShinyFeedback() to the ui. Then in your server() function, you call one of the feedback functions: feedback(),
+                feedbackWarning(), feedbackDanger(), and feedbackSuccess().</p>
+                <pre>ui <- fluidPage(<br> shinyFeedback::useShinyFeedback(),<br> numericInput("n", "n", value = 10),<br> textOutput("half")<br>)<br><br>server <- function(input, output, session) {<br> half <- reactive({<br> even <- input$n %% 2 == 0<br> shinyFeedback::feedbackWarning("n", !even, "Please select an even number")<br> input$n / 2<br> })<br> output$half <- renderText(half())<br>}</pre>
+              <p><strong>req() Require</strong></p>
+              <p>We need some way to “pause” reactives so that nothing happens until some condition
+                is true. That’s the job of req(), which checks for required values before allowing a
+                reactive producer to continue.</p>
+                <pre>ui <- fluidPage(<br> selectInput("language", "Language", choices = c("", "English", "Maori")),<br> textInput("name", "Name"),<br> textOutput("greeting")<br>)<br><br>output$greeting <- renderText({<br> req(input$language, input$name)<br> paste0(greetings[[input$language]], " ", input$name, "!")<br>})</pre>
+                <p>The <code>req()</code> function is designed so that <code>req(input$x)</code> will only proceed if the user has supplied a value, regardless of the type of input control. You can also use <code>req()</code> with your own logical statement if needed. For example, <code>req(input$a > 0)</code> will permit computation to proceed when <code>a</code> is greater than 0. This is typically the form you'll use when performing validation, as we'll see next.</p>
+                <p><strong>Validate Output</strong></p>
+                <p>You can do so with a tool built into shiny: <code>validate()</code>. When called inside a reactive or an output, <code>validate(message)</code> stops execution of the rest of the code and instead displays <code>message</code> in any downstream outputs. The following code shows a simple example where we don't want to log or square-root negative values:</p>
+                <pre>ui &lt;- fluidPage(<br>  numericInput("x", "x", value = 0),<br>  selectInput("trans", "transformation",<br>    choices = c("square", "log", "square-root")<br>  ),<br>  textOutput("out")<br>)<br><br>server &lt;- function(input, output, server) {<br>  output$out &lt;- renderText({<br>    if (input$x &lt; 0 &amp;&amp; input$trans %in% c("log", "square-root")) {<br>      validate("x can not be negative for this transformation")<br>    }<br>    switch(input$trans,<br>      square = input$x ^ 2,<br>      "square-root" = sqrt(input$x),<br>      log = log(input$x)<br>    )<br>  })<br>}</pre>
+
+            </div>
+            <div class="cont9 cont">
+              <h1></h1>
+              <p>There are three key techniques for creating dynamic user interfaces:</p>
+              <ul>
+                <li>Using the update family of functions to modify parameters of input controls</li>
+                <li>Using tabsetPanel() to conditionally show and hide parts of the user interface</li>
+                <li>Using uiOutput() and renderUI() to generate selected parts of the user interface with code</li>
+              </ul>
+              <pre>ui &lt;- fluidPage(<br>  numericInput("min", "Minimum", 0),<br>  numericInput("max", "Maximum", 3),<br>  sliderInput("n", "n", min = 0, max = 3, value = 1)<br>)<br>server &lt;- function(input, output, session) {<br>  observeEvent(input$min, {<br>    updateSliderInput(inputId = "n", min = input$min)<br>  })<br>  observeEvent(input$max, {<br>    updateSliderInput(inputId = "n", max = input$max)<br>  })<br>}</pre>
+              <p><strong>Dynamic Visibility</strong></p>
+              <p>There are two main ideas here:</p>
+              <li>Use tabset panel with hidden tabs.</li>
+              <li>Use updateTabsetPanel() to switch tabs from the server.</li>
+              <pre>ui &lt;- fluidPage(<br>sidebarLayout(<br>sidebarPanel(<br>selectInput("controller", "Show", choices = paste0("panel", 1:3))<br>),<br>mainPanel(<br>tabsetPanel(<br>id = "switcher",<br>type = "hidden",<br>tabPanelBody("panel1", "Panel 1 content"),<br>tabPanelBody("panel2", "Panel 2 content"),<br>tabPanelBody("panel3", "Panel 3 content")<br>)<br>)<br>)<br>)<br>server &lt;- function(input, output, session) {<br>observeEvent(input$controller, {<br>updateTabsetPanel(inputId = "switcher", selected = input$controller)<br>})<br>}</pre>
+              <p><strong>Conditional UI</strong></p>
+              <pre>parameter_tabs <- tabsetPanel(
+                id = "params",
+                type = "hidden",
+                tabPanel("normal",
+                  numericInput("mean", "mean", value = 1),
+                  numericInput("sd", "standard deviation", min = 0, value = 1)
+                ),
+                tabPanel("uniform",
+                  numericInput("min", "min", value = 0),
+                  numericInput("max", "max", value = 1)
+                ),
+                tabPanel("exponential",
+                  numericInput("rate", "rate", value = 1, min = 0)
+                )
+              )
+              
+ui <- fluidPage(
+                sidebarLayout(
+                  sidebarPanel(
+                    selectInput("dist", "Distribution",
+                      choices = c("normal", "uniform", "exponential")
+                    ),
+                    numericInput("n", "Number of samples", value = 100),
+                    parameter_tabs
+                  ),
+                  mainPanel(
+                    plotOutput("hist")
+                  )
+                )
+              )
+              
+server <- function(input, output, session) {
+                observeEvent(input$dist, {
+                  updateTabsetPanel(inputId = "params", selected = input$dist)
+                })
+                
+                sample <- reactive({
+                  switch(input$dist,
+                    normal = rnorm(input$n, input$mean, input$sd),
+                    uniform = runif(input$n, input$min, input$max),
+                    exponential = rexp(input$n, input$rate)
+                  )
+                })
+                
+                output$hist <- renderPlot(hist(sample()), res = 96)
+              }</pre>
+              <p>To create an app that allows users to simulate data from different distributions (normal, uniform, exponential), we can utilize tabPanel() to group the unique user interface for each distribution. These tab panels will be organized within a tabsetPanel().</p>
+              <p>The complete UI will include additional elements such as controls for selecting the number of samples and a histogram to display the simulation results. The choices in the selectInput("dist") control will be matched with the names of the tab panels to ensure seamless switching of controls based on the selected distribution.</p>
+              <p>By using observeEvent(), we can easily handle the event when the distribution selection changes. This event will trigger the updateTabsetPanel() function to switch between the appropriate controls for the selected distribution. The remaining functionality of the app, such as generating the simulated data and rendering the histogram, follows familiar techniques.</p>
+              <p>Overall, this approach allows for a flexible and interactive user interface that adapts to the selected distribution, providing a smooth user experience.</p>
+
             </div>
         </div>
     </div>

@@ -53,6 +53,7 @@ body{
     border-radius: 10px;
     border-left: none;
     background-color: rgb(253, 164, 179);
+    overflow: scroll;
 }
 
 .sidebar ul li{
